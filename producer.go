@@ -18,7 +18,7 @@ type Producer interface {
 type OutgoingMessage struct {
 	DeduplicationId *string
 	GroupId         *string
-	Payload         interface{}
+	Payload         []byte
 	Attributes      map[string]string
 }
 
@@ -48,12 +48,7 @@ func (p *producer) Send(ctx context.Context, msg OutgoingMessage) (*string, erro
 		}
 	}
 
-	bytes, err := json.Marshal(msg.Payload)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to marshal payload")
-	}
-	payload := string(bytes)
-
+	payload := string(msg.Payload)
 	input := sqs.SendMessageInput{
 		QueueUrl:               aws.String(p.QueueUrl),
 		MessageBody:            aws.String(payload),
@@ -71,4 +66,12 @@ func (p *producer) Send(ctx context.Context, msg OutgoingMessage) (*string, erro
 	}
 
 	return output.MessageId, nil
+}
+
+func MarshalToJson(payload interface{}) ([]byte, error) {
+	bytes, err := json.Marshal(payload)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to marshal payload")
+	}
+	return bytes, nil
 }

@@ -1,4 +1,4 @@
-package sqsgo
+package gosqs
 
 import (
 	"time"

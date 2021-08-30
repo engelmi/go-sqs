@@ -27,7 +27,6 @@ func NewClient(region, endpoint, queue string) (*Client, error) {
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Failed to get url for queue '%s'", queue))
-
 	}
 	if output.QueueUrl == nil {
 		return nil, errors.New(fmt.Sprintf("QueueUrl was empty for queue '%s'", queue))

@@ -7,10 +7,11 @@ services:
   - docker
 
 before_install: 
-  - make start-sqs
+  - docker run -p 9324:9324 -p 9325:9325 -v `pwd`/queues.conf:/opt/elasticmq.conf softwaremill/elasticmq
 
 script:
-  - make test
+  - go test ./... --tags=unit -race
+  - go test ./... --tags=integration -race
 
 branches:
   only:

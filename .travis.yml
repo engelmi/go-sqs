@@ -1,0 +1,17 @@
+language: go
+
+go: 
+  1.16
+
+services:
+  - docker
+
+before_install: 
+  - make start-sqs
+
+script:
+  - make test
+
+branches:
+  only:
+    - main

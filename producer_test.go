@@ -3,8 +3,9 @@
 package gosqs_test
 
 import (
-	gosqs "go-sqs"
 	"testing"
+
+	gosqs "github.com/engelmi/go-sqs"
 )
 
 func Test_MarshalToJson(t *testing.T) {

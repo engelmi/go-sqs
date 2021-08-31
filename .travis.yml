@@ -1,18 +1,8 @@
 language: go
-
 go: 
   1.16
-
-services:
-  - docker
-
-before_install: 
-  - docker run -p 9324:9324 -p 9325:9325 -v `pwd`/queues.conf:/opt/elasticmq.conf softwaremill/elasticmq
-
 script:
   - go test ./... --tags=unit -race
-  - go test ./... --tags=integration -race
-
 branches:
   only:
     - main

@@ -3,8 +3,9 @@
 package internal_test
 
 import (
-	"go-sqs/internal"
 	"testing"
+
+	"github.com/engelmi/go-sqs/internal"
 )
 
 func Test_NewClient(t *testing.T) {

@@ -3,9 +3,10 @@ package gosqs
 import (
 	"context"
 	"fmt"
-	"go-sqs/internal"
 	"sync"
 	"time"
+
+	"github.com/engelmi/go-sqs/internal"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"

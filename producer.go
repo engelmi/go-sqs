@@ -3,8 +3,9 @@ package gosqs
 import (
 	"context"
 	"encoding/json"
-	"go-sqs/internal"
 	"time"
+
+	"github.com/engelmi/go-sqs/internal"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"

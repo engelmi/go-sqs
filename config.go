@@ -22,5 +22,5 @@ type ConsumerConfig struct {
 	PollTimeout         time.Duration
 	AckTimeout          time.Duration
 	MaxNumberOfMessages int64
-	logger              logrus.Logger
+	Logger              logrus.Logger
 }

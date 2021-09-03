@@ -41,7 +41,7 @@ func NewConsumer(config ConsumerConfig, handlerFunc MessageHandler) (Consumer, e
 
 	return &consumer{
 		Client:              client,
-		logger:              config.logger,
+		logger:              config.Logger,
 		handlerFunc:         handlerFunc,
 		pollTimeout:         int64(config.PollTimeout.Seconds()),
 		ackTimeout:          config.AckTimeout,

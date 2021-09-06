@@ -63,7 +63,7 @@ func (g Gopher) Consume() {
 		Config: gosqs.Config{
 			Region:   "eu-central-1",
 			Endpoint: "http://localhost:9324",
-			Queue:    "pink_panther",
+			Queue:    g.queueName,
 		},
 		PollTimeout:         10 * time.Second,
 		AckTimeout:          2 * time.Second,

@@ -6,19 +6,19 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Config struct {
+type QueueConfig struct {
 	Region   string
 	Endpoint string
 	Queue    string
 }
 
 type ProducerConfig struct {
-	Config
+	QueueConfig
 	Timeout time.Duration
 }
 
 type ConsumerConfig struct {
-	Config
+	QueueConfig
 	PollTimeout         time.Duration
 	AckTimeout          time.Duration
 	MaxNumberOfMessages int64

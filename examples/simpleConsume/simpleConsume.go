@@ -23,7 +23,7 @@ func main() {
 	}
 
 	consumer, err := gosqs.NewConsumer(gosqs.ConsumerConfig{
-		Config: gosqs.Config{
+		QueueConfig: gosqs.QueueConfig{
 			Region:   "eu-central-1",
 			Endpoint: "http://localhost:9324",
 			Queue:    "simple_consume",

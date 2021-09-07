@@ -39,7 +39,7 @@ func (g Gopher) PushMessage(msg string) {
 
 func (g Gopher) setupProducer() gosqs.Producer {
 	p, err := gosqs.NewProducer(gosqs.ProducerConfig{
-		Config: gosqs.Config{
+		QueueConfig: gosqs.QueueConfig{
 			Region:   "eu-central-1",
 			Endpoint: "http://localhost:9324",
 			Queue:    g.queueName,
@@ -60,7 +60,7 @@ func (g Gopher) sendMessage(p gosqs.Producer, msg string) {
 
 func (g Gopher) Consume() {
 	consumer, err := gosqs.NewConsumer(gosqs.ConsumerConfig{
-		Config: gosqs.Config{
+		QueueConfig: gosqs.QueueConfig{
 			Region:   "eu-central-1",
 			Endpoint: "http://localhost:9324",
 			Queue:    g.queueName,

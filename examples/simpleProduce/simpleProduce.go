@@ -10,7 +10,7 @@ import (
 
 func main() {
 	p, err := gosqs.NewProducer(gosqs.ProducerConfig{
-		Config: gosqs.Config{
+		QueueConfig: gosqs.QueueConfig{
 			Region:   "eu-central-1",
 			Endpoint: "http://localhost:9324",
 			Queue:    "simple_produce",

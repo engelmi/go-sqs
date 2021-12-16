@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/sqs"
 	gosqs "github.com/engelmi/go-sqs"
 )
 
@@ -68,7 +67,7 @@ func (g Gopher) Consume() {
 		PollTimeout:         10 * time.Second,
 		AckTimeout:          2 * time.Second,
 		MaxNumberOfMessages: 10,
-	}, func(ctx context.Context, receivedMsg *sqs.Message) error {
+	}, func(ctx context.Context, receivedMsg gosqs.IncomingMessage) error {
 		msg := fmt.Sprintf("%s: Got message '%s'", g.name, *receivedMsg.Body)
 		fmt.Println(msg)
 

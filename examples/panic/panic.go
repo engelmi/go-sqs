@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/sqs"
 	gosqs "github.com/engelmi/go-sqs"
 	"github.com/engelmi/go-sqs/examples"
 	"github.com/sirupsen/logrus"
@@ -15,7 +14,7 @@ import (
 func main() {
 	wg := &sync.WaitGroup{}
 
-	handler := func(ctx context.Context, receivedMsg *sqs.Message) error {
+	handler := func(ctx context.Context, receivedMsg gosqs.IncomingMessage) error {
 		fmt.Println(fmt.Sprintf("Got message '%s'", *receivedMsg.Body))
 		panic(fmt.Sprintf("Handler panic for message '%s'", *receivedMsg.Body))
 	}

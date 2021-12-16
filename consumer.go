@@ -19,7 +19,7 @@ type Consumer interface {
 	StopListening() error
 }
 
-type MessageHandler func(ctx context.Context, msg *sqs.Message) error
+type MessageHandler func(ctx context.Context, msg IncomingMessage) error
 
 type consumer struct {
 	*internal.Client
@@ -70,7 +70,7 @@ func (c *consumer) StartListening(ctx context.Context, wg *sync.WaitGroup) {
 
 func (c *consumer) StopListening() error {
 	if c.cancelFunc == nil {
-		errors.New("Consumer has not been started yet")
+		return errors.New("Consumer has not been started yet")
 	}
 	c.cancelFunc()
 	return nil
@@ -116,13 +116,18 @@ func (c *consumer) processMessage(ctx context.Context, msg *sqs.Message) {
 }
 
 func (c *consumer) callHandlerFunc(ctx context.Context, msg *sqs.Message) (err error) {
+	if msg == nil {
+		c.logger.WithContext(ctx).Info("Skipping empty message")
+		return nil
+	}
+
 	defer func() {
 		if r := recover(); r != nil {
 			err = errors.New(fmt.Sprintf("SQS-Handler function paniced: %v", r))
 		}
 	}()
 
-	return c.handlerFunc(ctx, msg)
+	return c.handlerFunc(ctx, c.mapFromSqsMessage(msg))
 }
 
 func (c *consumer) acknowledgeMessage(ctx context.Context, msg *sqs.Message) error {
@@ -135,4 +140,25 @@ func (c *consumer) acknowledgeMessage(ctx context.Context, msg *sqs.Message) err
 	})
 
 	return errors.WithStack(err)
+}
+
+func (c *consumer) mapFromSqsMessage(awsmsg *sqs.Message) IncomingMessage {
+	msgAttrValues := map[string]*IncomingMessageAttributeValue{}
+	for key, value := range awsmsg.MessageAttributes {
+		msgAttrValues[key] = &IncomingMessageAttributeValue{
+			DataType:    value.DataType,
+			BinaryValue: value.BinaryValue,
+			StringValue: value.StringValue,
+		}
+	}
+
+	return IncomingMessage{
+		MessageId:              awsmsg.MessageId,
+		ReceiptHandle:          awsmsg.ReceiptHandle,
+		Body:                   awsmsg.Body,
+		MD5OfBody:              awsmsg.MD5OfBody,
+		MessageAttributes:      msgAttrValues,
+		MD5OfMessageAttributes: awsmsg.MD5OfMessageAttributes,
+		Attributes:             awsmsg.Attributes,
+	}
 }

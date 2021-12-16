@@ -16,13 +16,6 @@ type Producer interface {
 	Send(ctx context.Context, msg OutgoingMessage) (*string, error)
 }
 
-type OutgoingMessage struct {
-	DeduplicationId *string
-	GroupId         *string
-	Payload         []byte
-	Attributes      map[string]string
-}
-
 type producer struct {
 	*internal.Client
 	timeout time.Duration
@@ -41,6 +34,18 @@ func NewProducer(config ProducerConfig) (Producer, error) {
 }
 
 func (p *producer) Send(ctx context.Context, msg OutgoingMessage) (*string, error) {
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), p.timeout)
+	defer cancel()
+
+	output, err := p.Sqs.SendMessageWithContext(timeoutCtx, p.mapToAwsMessage(msg))
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to send message")
+	}
+
+	return output.MessageId, nil
+}
+
+func (p *producer) mapToAwsMessage(msg OutgoingMessage) *sqs.SendMessageInput {
 	attributes := make(map[string]*sqs.MessageAttributeValue)
 	for key, value := range msg.Attributes {
 		attributes[key] = &sqs.MessageAttributeValue{
@@ -50,23 +55,13 @@ func (p *producer) Send(ctx context.Context, msg OutgoingMessage) (*string, erro
 	}
 
 	payload := string(msg.Payload)
-	input := sqs.SendMessageInput{
+	return &sqs.SendMessageInput{
 		QueueUrl:               aws.String(p.QueueUrl),
 		MessageBody:            aws.String(payload),
 		MessageAttributes:      attributes,
 		MessageGroupId:         msg.GroupId,
 		MessageDeduplicationId: msg.DeduplicationId,
 	}
-
-	timeoutCtx, cancel := context.WithTimeout(context.Background(), p.timeout)
-	defer cancel()
-
-	output, err := p.Sqs.SendMessageWithContext(timeoutCtx, &input)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to send message")
-	}
-
-	return output.MessageId, nil
 }
 
 func MarshalToJson(payload interface{}) ([]byte, error) {

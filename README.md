@@ -27,3 +27,14 @@ $ go get github.com/engelmi/go-sqs
 
 ## Usage
 Examples on how to use `go-sqs` are provided in `github.com/engelmi/go-sqs/examples`. 
+
+The credentials file `~/.aws/credentials` containing dummy values for the access key and secret key is required to run the examples: 
+```
+[default]
+aws_access_key_id = foo
+aws_secret_access_key = bar
+```
+Alternatively, provide both values via environment variables: 
+```bash
+AWS_ACCESS_KEY_ID='foo' AWS_SECRET_ACCESS_KEY='bar' go run <example-file>.go
+```

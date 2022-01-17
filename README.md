@@ -10,7 +10,7 @@ A simplistic library to listen for and produce messages to Amazons **S**imple **
 ## Quick start
 Get started with `go-sqs` via
 ```bash
-$ go get github.com/engelmi/go-sqs
+go get github.com/engelmi/go-sqs
 ```
 
 ## Features

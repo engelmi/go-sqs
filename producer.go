@@ -46,22 +46,24 @@ func (p *producer) Send(ctx context.Context, msg OutgoingMessage) (*string, erro
 }
 
 func (p *producer) mapToAwsMessage(msg OutgoingMessage) *sqs.SendMessageInput {
-	attributes := make(map[string]*sqs.MessageAttributeValue)
-	for key, value := range msg.Attributes {
-		attributes[key] = &sqs.MessageAttributeValue{
-			DataType:    aws.String("String"),
-			StringValue: aws.String(value),
-		}
-	}
-
 	payload := string(msg.Payload)
-	return &sqs.SendMessageInput{
+	input := &sqs.SendMessageInput{
 		QueueUrl:               aws.String(p.QueueUrl),
 		MessageBody:            aws.String(payload),
-		MessageAttributes:      attributes,
 		MessageGroupId:         msg.GroupId,
 		MessageDeduplicationId: msg.DeduplicationId,
 	}
+	if msg.Attributes != nil {
+		attributes := make(map[string]*sqs.MessageAttributeValue)
+		for key, value := range msg.Attributes {
+			attributes[key] = &sqs.MessageAttributeValue{
+				DataType:    aws.String("String"),
+				StringValue: aws.String(value),
+			}
+		}
+		input.MessageAttributes = attributes
+	}
+	return input
 }
 
 func MarshalToJson(payload interface{}) ([]byte, error) {
